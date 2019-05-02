@@ -1,6 +1,6 @@
 # Minesweeper
 
-Link to wireframes: [wireframes](wireframes.PNG)
+Link to wireframes: [wireframes](Wireframes.PNG)
 
 ## Pseudocode
 
