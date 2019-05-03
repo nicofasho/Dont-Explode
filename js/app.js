@@ -109,7 +109,7 @@ function setArounds() {
             element.around += 1;
           }
         }
-        if (rowIdx < 4) {
+        if (rowIdx < (boardWidth - 1)) {
           if (hiddenBoard[(colIdx - 1)][(rowIdx + 1)].value === STATE.bomb) {
             element.around += 1;
           }
@@ -118,13 +118,13 @@ function setArounds() {
           element.around += 1;
         }
       }
-      if (colIdx < 4) {
+      if (colIdx < (boardHeight - 1)) {
         if (rowIdx > 0) {
           if (hiddenBoard[(colIdx + 1)][(rowIdx - 1)].value === STATE.bomb) {
             element.around += 1;
           }
         }
-        if (rowIdx < 4) {
+        if (rowIdx < (boardWidth - 1)) {
           if (hiddenBoard[(colIdx + 1)][(rowIdx + 1)].value === STATE.bomb) {
             element.around += 1;
           }
@@ -138,7 +138,7 @@ function setArounds() {
           element.around += 1;
         }
       }
-      if (rowIdx < 4) {
+      if (rowIdx < (boardWidth - 1)) {
         if (hiddenBoard[colIdx][(rowIdx + 1)].value === STATE.bomb) {
           element.around += 1;
         }
