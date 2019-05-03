@@ -4,8 +4,8 @@ const STATE = {
   bomb: 1,
   blank: 0,
   flag: "F",
-  "question mark": "Q"
-};
+  "question mark": "Q",
+}
 
 /*----- app's state (variables) -----*/
 
@@ -39,8 +39,14 @@ function init() {
     visibleBoard[i] = [];
     hiddenBoard[i] = [];
     for (let j = 0; j < boardHeight; j++) {
-      visibleBoard[i][j] = { value: 0, around: 0 };
-      hiddenBoard[i][j] = { value: 0, around: 0 };
+      visibleBoard[i][j] = {
+        value: 0,
+        around: 0
+      };
+      hiddenBoard[i][j] = {
+        value: 0,
+        around: 0
+      };
     }
   }
 
@@ -67,65 +73,81 @@ function init() {
   //left = [nestIdx - 1][arrayIdx]
   //topLeft = [nestIdx - 1][arrayIdx - 1]
 
-  hiddenBoard.forEach(function(array, colIdx) {
-    array.forEach(function(element, rowIdx) {
+  hiddenBoard.forEach(function (array, colIdx) {
+    array.forEach(function (element, rowIdx) {
       //if each position around said element exists
       //start with top, go around clockwise i guess
       //TODO: definitely split this into a function, shit's bout to get messy
-      //check if it's a 1
-      //if so, add 1 to around property
-      // console.log(element);
-      if (rowIdx > 0) {
-        if (hiddenBoard[colIdx][(rowIdx - 1)]["value"] === STATE["bomb"]) {
-          element["around"] += 1;
+      // rewrite with nested ifs
+
+      if(colIdx  > 0){
+        if(rowIdx > 0){
+          if(hiddenBoard[(colIdx - 1)][(rowIdx - 1)].value === STATE.bomb) {
+            element.around += 1;
+          }
         }
-      }
-      if (rowIdx > 0 && colIdx < 4) {
-        if (hiddenBoard[(colIdx + 1)][(rowIdx - 1)]["value"] === STATE["bomb"]) {
-          element["around"] += 1;
+        if (rowIdx < 4){
+          if(hiddenBoard[(colIdx - 1)][(rowIdx + 1)].value === STATE.bomb) {
+            element.around += 1;
+          }
+        }
+        if(hiddenBoard[(colIdx - 1)][rowIdx].value === STATE.bomb){
+          element.around += 1;
         }
       }
       if(colIdx < 4){
-        if(hiddenBoard[(colIdx + 1)][rowIdx]["value"] === STATE["bomb"]){
-          element["around"] += 1;
+        if(rowIdx > 0){
+          if(hiddenBoard[(colIdx + 1)][(rowIdx - 1)].value === STATE.bomb){
+            element.around += 1;
+          }
+        }
+        if(rowIdx < 4){
+          if(hiddenBoard[(colIdx + 1)][(rowIdx + 1)].value === STATE.bomb){
+            element.around += 1;
+          }
+        }
+        if(hiddenBoard[(colIdx + 1)][rowIdx].value === STATE.bomb){
+          element.around += 1;
         }
       }
-      if(colIdx < 4 && rowIdx < 4){
-        if(hiddenBoard[(colIdx + 1)][(rowIdx + 1)]["value"] === STATE["bomb"]){
-          element["around"] += 1;
+      if(rowIdx > 0){
+        if(hiddenBoard[colIdx][(rowIdx - 1)].value === STATE.bomb){
+          element.around += 1;
         }
       }
-      if(rowIdx < 4) {
-        if(hiddenBoard[colIdx][(rowIdx + 1)]["value"] === STATE["bomb"]){
-          element["around"] += 1;
+      if(rowIdx < 4){
+        if(hiddenBoard[colIdx][(rowIdx + 1)].value === STATE.bomb){
+          element.around += 1;
         }
       }
-      if(rowIdx > 0 && colIdx > 0){
-        if(hiddenBoard[(colIdx - 1)][(rowIdx - 1)]["value"] === STATE["bomb"]){
-          element["around"] += 1;
-        }
-      }
-      if(colIdx > 0){
-        if(hiddenBoard[(colIdx - 1)][rowIdx]["value"] === STATE["bomb"]){
-          element["around"] += 1;
-        }
-      }
-      if(colIdx > 0 && rowIdx < 4){
-        if(hiddenBoard[(colIdx - 1)][rowIdx + 1]){
-          element["around"] += 1;
-        }
-      }
+
     });
   });
 
   console.table(hiddenBoard);
 
   console.log(`Checking if around values are updated : `);
-  hiddenBoard.forEach(function(array, colIdx) {
-    array.forEach(function(element, rowIdx) {
-      console.log('X: ',colIdx,' Y: ',rowIdx,' ',' Value: ',element.value,' Around: ',element.around);
+  let bombImage = '';
+
+  hiddenBoard.forEach(function (array, colIdx) {
+    array.forEach(function (element, rowIdx) {
+      // console.log('X: ', colIdx, ' Y: ', rowIdx, ' ', ' Value: ', element.value, ' Around: ', element.around);
+      bombImage += `${element.value } `;
     });
+    bombImage += `\n`;
   });
+  console.log(bombImage);
+
+  let aroundImage = '';
+
+  hiddenBoard.forEach(function (array, colIdx) {
+    array.forEach(function (element, rowIdx) {
+      // console.log('X: ', colIdx, ' Y: ', rowIdx, ' ', ' Value: ', element.value, ' Around: ', element.around);
+      aroundImage += `${element.around } `;
+    });
+    aroundImage += `\n`;
+  });
+  console.log(aroundImage);
 }
 
 function render() {}
