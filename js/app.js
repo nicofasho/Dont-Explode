@@ -57,8 +57,11 @@ function render() {
 
 }
 
-function reveal(){
-  
+
+function reveal(cell){
+  if(cell.around === 0){
+
+  }
 }
 
 
