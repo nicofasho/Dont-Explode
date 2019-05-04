@@ -1,7 +1,7 @@
 /*----- constants -----*/
 const STATE = {
   bomb: 1,
-  blank: 0,
+  safe: 0,
   flag: "F",
   "question mark": "Q"
 };
@@ -18,36 +18,49 @@ var initialCell,
   bombY;
 
 /*----- cached element references -----*/
+const container = document.querySelector('section');
+
 
 /*----- event listeners -----*/
+container.addEventListener('mousedown', handleClick);
+
+
 
 /*----- functions -----*/
 init();
 
 function handleClick(evt) {
   //fetch value of clicked cell
-
+  //add logic to differentiate between left and right clicks
   //cells should be id'd 'i-j' in nested for loops that generate them in the html
   let cellId = evt.target.id.split("-");
   let colIdx = cellId[0];
   let rowIdx = cellId[1];
   let cell = board[cellId[0]][cellId[1]];
-  exploded = hiddenCell.value;
+  exploded = cell.value;
   //if 0
   if (exploded === 0) {
-    //if around === 0 then reveal all 8
-    //call function on that cell, make it recursive somehow.... somehow
-    //if around > 0 then only reveal self
     reveal(cell, colIdx, rowIdx);
+  } else {
+    explode();
   }
-  //repeat recursively
-  //AND around === 0, then reveal all 8 squares around it
-  //check if all 8 cells exist first
-  //then call said function, oh boi
-  //otherwise just reveal self
 }
 
 function render() {}
+
+function drawBoard(){
+
+}
+
+function explode(){
+  let bombs = board.forEach((array,colIdx) => {
+    array.filter((element,rowIdx) => {
+      return element.value === STATE.bomb;
+    });
+  });
+
+  bombs.forEach((element) => element.revealed = true);
+}
 
 function reveal(cell, colIdx, rowIdx) {
   if (cell.around === 0) {
@@ -109,25 +122,25 @@ function init() {
 
 function showBoards() {
   console.log(`Checking if around values are updated : `);
-  let bombImage = "";
+  let bombLog = "";
 
   board.forEach(function(array, colIdx) {
     array.forEach(function(element, rowIdx) {
-      bombImage += `${element.value} `;
+      bombLog += `${element.value} `;
     });
-    bombImage += `\n`;
+    bombLog += `\n`;
   });
-  console.log(bombImage);
+  console.log(bombLog);
 
-  let aroundImage = "";
+  let aroundLog = "";
 
   board.forEach(function(array, colIdx) {
     array.forEach(function(element, rowIdx) {
-      aroundImage += `${element.around} `;
+      aroundLog += `${element.around} `;
     });
-    aroundImage += `\n`;
+    aroundLog += `\n`;
   });
-  console.log(aroundImage);
+  console.log(aroundLog);
 }
 
 function initBoards(boardWidth, boardHeight) {
