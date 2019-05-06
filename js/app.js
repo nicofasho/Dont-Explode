@@ -18,7 +18,8 @@ let numBombs;
 let difficulty;
 let bombX;
 let bombY;
-var cellArray;
+let cellArray;
+let bombsArray;
 
 /* ----- cached element references -----*/
 // eslint-disable-next-line no-undef
@@ -67,9 +68,10 @@ function render() {
   board.forEach((array, colIdx) => {
     array.forEach((element, rowIdx) => {
       if (element.revealed === false) {
-        cellArray[colIdx][rowIdx].style.background = 'black';
+        cellArray[colIdx][rowIdx].style.background = 'blanchedalmond';
       } else {
         cellArray[colIdx][rowIdx].style.background = 'white';
+        if (element.around > 0) cellArray[colIdx][rowIdx].textContent = `${element.around}`;
       }
     });
   });
@@ -89,12 +91,8 @@ function drawBoard() {
 }
 
 function explode(evt) {
-  const bombs = board.forEach((array, colIdx) => {
-    array.filter((element, rowIdx) => element.value === STATE.bomb);
-    evt.target.style.background = 'red';
-  });
-
   // bombs.forEach((element) => element.revealed = true);
+  // evt.target.style.background = 'red';
   console.log('you exploded :/');
 }
 
@@ -106,43 +104,27 @@ function reveal(colIdx, rowIdx) {
   if (board[colIdx][rowIdx].around === 0) {
     if (colIdx > 0) {
       if (rowIdx > 0) {
-        if (board[colIdx - 1][rowIdx - 1].around === 0) {
-          reveal((colIdx - 1), (rowIdx - 1));
-        }
+        reveal((colIdx - 1), (rowIdx - 1));
       }
-      if (rowIdx < boardWidth - 2) {
-        if (board[(colIdx - 1)][rowIdx + 1].around === 0) {
-          reveal((colIdx - 1), (rowIdx + 1));
-        }
+      if (rowIdx < boardWidth - 1) {
+        reveal((colIdx - 1), (rowIdx + 1));
       }
-      if (board[(colIdx - 1)][rowIdx].around === 0) {
-        reveal((colIdx - 1), (rowIdx));
-      }
+      reveal((colIdx - 1), (rowIdx));
     }
-    if (colIdx < boardHeight - 2) {
+    if (colIdx < boardHeight - 1) {
       if (rowIdx > 0) {
-        if (board[(colIdx + 1)][rowIdx - 1].around === 0) {
-          reveal((colIdx + 1), (rowIdx - 1));
-        }
+        reveal((colIdx + 1), (rowIdx - 1));
       }
-      if (rowIdx < boardWidth - 2) {
-        if (board[(colIdx + 1)][rowIdx + 1].around === 0) {
-          reveal((colIdx + 1), (rowIdx + 1));
-        }
+      if (rowIdx < boardWidth - 1) {
+        reveal((colIdx + 1), (rowIdx + 1));
       }
-      if (board[(colIdx + 1)][rowIdx].around === 0) {
-        reveal((colIdx + 1), (rowIdx));
-      }
+      reveal((colIdx + 1), (rowIdx));
     }
     if (rowIdx > 0) {
-      if (board[(colIdx)][rowIdx - 1].around === 0) {
-        reveal((colIdx), (rowIdx - 1));
-      }
+      reveal((colIdx), (rowIdx - 1));
     }
-    if (rowIdx < boardWidth - 2) {
-      if (board[(colIdx)][rowIdx + 1].around === 0) {
-        reveal((colIdx), (rowIdx + 1));
-      }
+    if (rowIdx < boardWidth - 1) {
+      reveal((colIdx), (rowIdx + 1));
     }
   } else {
     board[colIdx][rowIdx].revealed = true;
@@ -177,22 +159,22 @@ function logBoards() {
   console.log('Checking if around values are updated : ');
   let bombLog = '';
 
-  board.forEach((array, colIdx) => {
-    array.forEach((element, rowIdx) => {
-      bombLog += `${element.value} `;
-    });
+  for (let i = 0; i < boardHeight; i += 1) {
+    for (let j = 0; j < boardWidth; j += 1) {
+      bombLog += `${board[j][i].value} `;
+    }
     bombLog += '\n';
-  });
+  }
   console.log(bombLog);
 
   let aroundLog = '';
 
-  board.forEach((array, colIdx) => {
-    array.forEach((element, rowIdx) => {
-      aroundLog += `${element.around} `;
-    });
+  for (let i = 0; i < boardHeight; i += 1) {
+    for (let j = 0; j < boardWidth; j += 1) {
+      aroundLog += `${board[j][i].around} `;
+    }
     aroundLog += '\n';
-  });
+  }
   console.log(aroundLog);
 }
 
@@ -216,13 +198,13 @@ function setBombs(bombs) {
   // Use randomizer on size of board to find bomb positions, limited by numBombs
 
   for (let i = bombs; i > 0; i -= 1) {
-    bombY = Math.floor(Math.random() * boardWidth);
-    bombX = Math.floor(Math.random() * boardHeight);
+    bombY = Math.floor(Math.random() * boardHeight);
+    bombX = Math.floor(Math.random() * boardWidth);
 
     // TODO: add OR  board[initialCell.x][initialCell.y].value === STATE.bomb
     while (board[bombX][bombY].value === STATE.bomb) {
-      bombY = Math.floor(Math.random() * boardWidth);
-      bombX = Math.floor(Math.random() * boardHeight);
+      bombY = Math.floor(Math.random() * boardHeight);
+      bombX = Math.floor(Math.random() * boardWidth);
     }
 
     board[bombX][bombY].value = STATE.bomb;
