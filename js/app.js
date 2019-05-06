@@ -18,10 +18,20 @@ let numBombs;
 let difficulty;
 let bombX;
 let bombY;
+var cellArray;
 
 /* ----- cached element references -----*/
 // eslint-disable-next-line no-undef
 const container = document.getElementById('container');
+// going to cache all squares - there could be a more elegant solution, but this will work for now
+
+function cacheCells() {
+  board.forEach((array, colIdx) => {
+    array.forEach((element, rowIdx) => {
+      cellArray[colIdx][rowIdx] = document.getElementById(`${colIdx}-${rowIdx}`);
+    });
+  });
+}
 
 
 /* ----- event listeners -----*/
@@ -38,8 +48,8 @@ function handleClick(evt) {
   // add logic to differentiate between left and right clicks
   // cells should be id'd 'i-j' in nested for loops that generate them in the html
   const cellId = evt.target.id.split('-');
-  const colIdx = cellId[0];
-  const rowIdx = cellId[1];
+  const colIdx = parseInt(cellId[0], 10);
+  const rowIdx = parseInt(cellId[1], 10);
   exploded = board[cellId[0]][cellId[1]].value;
   // if 0
   console.log(`${evt.target.id} clicked!`);
@@ -50,9 +60,20 @@ function handleClick(evt) {
     // eslint-disable-next-line no-use-before-define
     explode(evt);
   }
+  render();
 }
 
-function render() {}
+function render() {
+  board.forEach((array, colIdx) => {
+    array.forEach((element, rowIdx) => {
+      if (element.revealed === false) {
+        cellArray[colIdx][rowIdx].style.background = 'black';
+      } else {
+        cellArray[colIdx][rowIdx].style.background = 'white';
+      }
+    });
+  });
+}
 
 function drawBoard() {
   // eslint-disable-next-line no-undef
@@ -78,38 +99,50 @@ function explode(evt) {
 }
 
 function reveal(colIdx, rowIdx) {
+  if (board[colIdx][rowIdx].revealed === true) {
+    return;
+  }
+  board[colIdx][rowIdx].revealed = true;
   if (board[colIdx][rowIdx].around === 0) {
     if (colIdx > 0) {
       if (rowIdx > 0) {
-        board[colIdx][rowIdx].revealed = true;
-        reveal((colIdx - 1), (rowIdx - 1));
+        if (board[colIdx - 1][rowIdx - 1].around === 0) {
+          reveal((colIdx - 1), (rowIdx - 1));
+        }
       }
-      if (rowIdx < boardWidth - 1) {
-        board[colIdx][rowIdx].revealed = true;
-        reveal((colIdx - 1), (rowIdx + 1));
+      if (rowIdx < boardWidth - 2) {
+        if (board[(colIdx - 1)][rowIdx + 1].around === 0) {
+          reveal((colIdx - 1), (rowIdx + 1));
+        }
       }
-      board[colIdx][rowIdx].revealed = true;
-      reveal((colIdx - 1), rowIdx);
+      if (board[(colIdx - 1)][rowIdx].around === 0) {
+        reveal((colIdx - 1), (rowIdx));
+      }
     }
-    if (colIdx < boardHeight - 1) {
+    if (colIdx < boardHeight - 2) {
       if (rowIdx > 0) {
-        board[colIdx][rowIdx].revealed = true;
-        reveal((colIdx + 1), (rowIdx - 1));
+        if (board[(colIdx + 1)][rowIdx - 1].around === 0) {
+          reveal((colIdx + 1), (rowIdx - 1));
+        }
       }
-      if (rowIdx < boardWidth - 1) {
-        board[colIdx][rowIdx].revealed = true;
-        reveal((colIdx + 1), (rowIdx + 1));
+      if (rowIdx < boardWidth - 2) {
+        if (board[(colIdx + 1)][rowIdx + 1].around === 0) {
+          reveal((colIdx + 1), (rowIdx + 1));
+        }
       }
-      board[colIdx][rowIdx].revealed = true;
-      reveal((colIdx + 1), rowIdx);
+      if (board[(colIdx + 1)][rowIdx].around === 0) {
+        reveal((colIdx + 1), (rowIdx));
+      }
     }
     if (rowIdx > 0) {
-      board[colIdx][rowIdx].revealed = true;
-      reveal(colIdx, (rowIdx - 1));
+      if (board[(colIdx)][rowIdx - 1].around === 0) {
+        reveal((colIdx), (rowIdx - 1));
+      }
     }
-    if (rowIdx < boardWidth - 1) {
-      board[colIdx][rowIdx].revealed = true;
-      reveal(colIdx, (rowIdx + 1));
+    if (rowIdx < boardWidth - 2) {
+      if (board[(colIdx)][rowIdx + 1].around === 0) {
+        reveal((colIdx), (rowIdx + 1));
+      }
     }
   } else {
     board[colIdx][rowIdx].revealed = true;
@@ -122,6 +155,7 @@ function init() {
   board = [];
   difficulty = '';
   numBombs = 10;
+  cellArray = [];
   // TODO: will be calculated from difficulty or input from user
 
   // TODO: get initial cell from click here
@@ -129,16 +163,17 @@ function init() {
   // eslint-disable-next-line no-use-before-define
   initBoards(boardWidth, boardHeight);
 
-  render();
 
   setBombs(numBombs);
 
   // eslint-disable-next-line no-use-before-define
-  showBoards();
+  logBoards();
   drawBoard();
+  cacheCells();
+  render();
 }
 
-function showBoards() {
+function logBoards() {
   console.log('Checking if around values are updated : ');
   let bombLog = '';
 
@@ -164,12 +199,14 @@ function showBoards() {
 function initBoards(width, height) {
   for (let i = 0; i < height; i += 1) {
     board[i] = [];
-    for (let j = 0; j < board; j += 1) {
+    cellArray[i] = [];
+    for (let j = 0; j < width; j += 1) {
       board[i][j] = {
         value: 0,
         around: 0,
         revealed: false,
       };
+      cellArray[i][j] = {};
     }
   }
 }
@@ -179,17 +216,17 @@ function setBombs(bombs) {
   // Use randomizer on size of board to find bomb positions, limited by numBombs
 
   for (let i = bombs; i > 0; i -= 1) {
-    bombX = Math.floor(Math.random() * boardWidth);
-    bombY = Math.floor(Math.random() * boardHeight);
+    bombY = Math.floor(Math.random() * boardWidth);
+    bombX = Math.floor(Math.random() * boardHeight);
 
     // TODO: add OR  board[initialCell.x][initialCell.y].value === STATE.bomb
     while (board[bombX][bombY].value === STATE.bomb) {
-      bombX = Math.floor(Math.random() * boardWidth);
-      bombY = Math.floor(Math.random() * boardHeight);
+      bombY = Math.floor(Math.random() * boardWidth);
+      bombX = Math.floor(Math.random() * boardHeight);
     }
 
     board[bombX][bombY].value = STATE.bomb;
-    console.log(`bomb values: X - ${bombY} Y - ${bombX}`);
+    console.log(`bomb values: X - ${bombX} Y - ${bombY}`);
   }
 
   // eslint-disable-next-line no-use-before-define
