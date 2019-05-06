@@ -69,7 +69,8 @@ function handleClick(evt) {
     reveal(colIdx, rowIdx);
   } else {
     // eslint-disable-next-line no-use-before-define
-    explode(evt);
+    explode();
+    return;
   }
   render();
 }
@@ -91,14 +92,15 @@ function render() {
         element.cell.style.background = 'white';
         if (element.around > 0) element.cell.textContent = `${element.around}`;
       } else if (element.value === STATE.flag) element.cell.textContent = 'F';
-      else {
-        exploded = 1;
+      else if (element.value === STATE.['question mark']) element.cell.textContent = '?';
+      else if (element.value === STATE.bomb) {
+        explode();
       }
     });
   });
 }
 
-function explode(evt) {
+function explode() {
   // user clicked a bomb
   // find all bomb cells
   // change color to red
@@ -161,14 +163,16 @@ function reveal(colIdx, rowIdx) {
 }
 
 function init() {
-  boardWidth = 10; // TODO: update with dynamic sizing
-  boardHeight = 10;
+  boardWidth = 20; // TODO: update with dynamic sizing
+  boardHeight = 20;
   board = [];
   difficulty = '';
-  numBombs = 10;
+  numBombs = 40;
   cellArray = [];
   bombsArray = [];
   initialCell = [];
+  container.style.gridTemplateColumns = `repeat(${boardWidth}, ${60/boardWidth}vw)`;
+  container.style.gridTemplateRows = `repeat(${boardHeight}, ${80/boardHeight}vh)`;
   // TODO: will be calculated from difficulty or input from user
 
   // TODO: get initial cell from click here
@@ -214,7 +218,7 @@ function setBombs(bombs, colIdx, rowIdx) {
     }
     bombsArray.push(document.getElementById(`${bombX}-${bombY}`));
     board[bombX][bombY].value = STATE.bomb;
-    console.log(`bomb values: X - ${bombX} Y - ${bombY}`);
+    // console.log(`bomb values: X - ${bombX} Y - ${bombY}`);
   }
 
   // eslint-disable-next-line no-use-before-define
