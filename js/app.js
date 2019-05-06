@@ -18,7 +18,7 @@ var initialCell,
   bombY;
 
 /*----- cached element references -----*/
-const container = document.querySelector('section');
+const container = document.getElementById('container');
 
 
 /*----- event listeners -----*/
@@ -30,74 +30,83 @@ container.addEventListener('mousedown', handleClick);
 init();
 
 function handleClick(evt) {
-  //fetch value of clicked cell
+  //get value of clicked cell
   //add logic to differentiate between left and right clicks
   //cells should be id'd 'i-j' in nested for loops that generate them in the html
   let cellId = evt.target.id.split("-");
   let colIdx = cellId[0];
   let rowIdx = cellId[1];
-  let cell = board[cellId[0]][cellId[1]];
-  exploded = cell.value;
+  exploded = board[cellId[0]][cellId[1]].value;
   //if 0
+  console.log(`${evt.target.id} clicked!`);
   if (exploded === 0) {
-    reveal(cell, colIdx, rowIdx);
+    reveal(colIdx, rowIdx);
   } else {
-    explode();
+    explode(evt);
   }
 }
 
 function render() {}
 
 function drawBoard(){
-
+  var div = document.createElement('div');
+  for(let i = 0; i < boardHeight; i++){
+    for(let j = 0; j < boardWidth; j++){
+      div = document.createElement('div');
+      div.id = `${j}-${i}`;
+      container.appendChild(div);
+    }
+  }
 }
 
-function explode(){
+function explode(evt){
   let bombs = board.forEach((array,colIdx) => {
     array.filter((element,rowIdx) => {
       return element.value === STATE.bomb;
     });
+    evt.target.style.background = 'red';
   });
 
-  bombs.forEach((element) => element.revealed = true);
+  // bombs.forEach((element) => element.revealed = true);
+  console.log('you exploded :/');
 }
 
-function reveal(cell, colIdx, rowIdx) {
-  if (cell.around === 0) {
+function reveal(colIdx, rowIdx) {
+  if (board[colIdx][rowIdx].around === 0) {
     if(colIdx > 0){
       if(rowIdx > 0){
-        cell.revealed = true;
-        return reveal(board[colIdx - 1][rowIdx - 1],(colIdx - 1),(rowIdx - 1));
+        board[colIdx][rowIdx].revealed = true;
+        reveal((colIdx - 1),(rowIdx - 1));
       }
       if(rowIdx < boardWidth - 1){
-        cell.revealed = true;
-        return reveal(board[colIdx - 1][rowIdx + 1],(colIdx - 1),(rowIdx + 1));
+        board[colIdx][rowIdx].revealed = true;
+        reveal((colIdx - 1),(rowIdx + 1));
       }
-      cell.revealed = true;
-      return reveal(board[colIdx - 1][rowIdx],(colIdx - 1),rowIdx);
+      board[colIdx][rowIdx].revealed = true;
+      reveal((colIdx - 1),rowIdx);
     }
     if(colIdx < boardHeight - 1){
       if(rowIdx > 0){
-        cell.revealed = true;
-        return reveal(board[colIdx + 1][rowIdx - 1],(colIdx + 1),(rowIdx - 1));
+        board[colIdx][rowIdx].revealed = true;
+        reveal((colIdx + 1),(rowIdx - 1));
       }
       if(rowIdx < boardWidth - 1){
-        cell.revealed = true;
-        return reveal(board[colIdx + 1][rowIdx + 1],(colIdx + 1),(rowIdx + 1));
+        board[colIdx][rowIdx].revealed = true;
+        reveal((colIdx + 1),(rowIdx + 1));
       }
-      cell.revealed = true;
-      return reveal(board[colIdx + 1][rowIdx],(colIdx + 1),rowIdx);
+      board[colIdx][rowIdx].revealed = true;
+      reveal((colIdx + 1),rowIdx);
     }
     if(rowIdx > 0){
-      cell.revealed = true;
-      return reveal(board[colIdx][rowIdx - 1],colIdx,(rowIdx  - 1));
+      board[colIdx][rowIdx].revealed = true;
+      reveal(colIdx,(rowIdx  - 1));
     }
     if(rowIdx < boardWidth - 1){
-      cell.revealed = true;
-      return reveal(board[colIdx][rowIdx + 1],colIdx,(rowIdx + 1));
+      board[colIdx][rowIdx].revealed = true;
+      reveal(colIdx,(rowIdx + 1));
     }
   } else {
-    cell.revealed = true;
+    board[colIdx][rowIdx].revealed = true;
   }
 }
 
@@ -118,6 +127,7 @@ function init() {
   setBombs(numBombs);
 
   showBoards();
+  drawBoard();
 }
 
 function showBoards() {
@@ -180,10 +190,6 @@ function setBombs(numBombs) {
 function setArounds() {
   board.forEach(function(array, colIdx) {
     array.forEach(function(element, rowIdx) {
-      //if each position around said element exists
-      //start with top, go around clockwise i guess
-      //TODO: definitely split this into a function, shit's bout to get messy
-      // rewrite with nested ifs
 
       if (colIdx > 0) {
         if (rowIdx > 0) {

@@ -1,4 +1,4 @@
-# Minesweeper
+# Don't Explode - A Clone of Minesweeper
 
 Link to wireframes: [wireframes](Wireframes.PNG)
 
