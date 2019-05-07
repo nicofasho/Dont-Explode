@@ -92,7 +92,7 @@ function render() {
         element.cell.style.background = 'white';
         if (element.around > 0) element.cell.textContent = `${element.around}`;
       } else if (element.value === STATE.flag) element.cell.textContent = 'F';
-      else if (element.value === STATE.['question mark']) element.cell.textContent = '?';
+      // else if (element.value === STATE.['question mark']) element.cell.textContent = '?';
       else if (element.value === STATE.bomb) {
         explode();
       }
@@ -171,8 +171,8 @@ function init() {
   cellArray = [];
   bombsArray = [];
   initialCell = [];
-  container.style.gridTemplateColumns = `repeat(${boardWidth}, ${60/boardWidth}vw)`;
-  container.style.gridTemplateRows = `repeat(${boardHeight}, ${80/boardHeight}vh)`;
+  container.style.gridTemplateColumns = `repeat(${boardWidth}, ${60 / boardWidth}vw)`;
+  container.style.gridTemplateRows = `repeat(${boardHeight}, ${80 / boardHeight}vh)`;
   // TODO: will be calculated from difficulty or input from user
 
   // TODO: get initial cell from click here
