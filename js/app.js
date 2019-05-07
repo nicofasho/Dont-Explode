@@ -42,21 +42,28 @@ let victory;
 /* ----- cached element references -----*/
 // eslint-disable-next-line no-undef
 const container = document.getElementById('container');
+// eslint-disable-next-line no-undef
 const message = document.getElementById('message');
 // going to cache all squares - there could be a more elegant solution, but this will work for now
 
 function cacheCells() {
   board.forEach((array, colIdx) => {
     array.forEach((element, rowIdx) => {
+      // eslint-disable-next-line no-undef
       element.cell = document.getElementById(`${colIdx}-${rowIdx}`);
     });
   });
 }
 
+// eslint-disable-next-line no-undef
 const easyButton = document.getElementById('easy');
+// eslint-disable-next-line no-undef
 const mediumButton = document.getElementById('medium');
+// eslint-disable-next-line no-undef
 const hardButton = document.getElementById('hard');
+// eslint-disable-next-line no-undef
 const form = document.getElementById('form');
+// eslint-disable-next-line no-undef
 const resetButton = document.getElementById('reset');
 
 
@@ -200,6 +207,7 @@ function explode() {
   console.log('you exploded :/');
 }
 
+// eslint-disable-next-line no-unused-vars
 function cheat() {
   board.forEach((array) => {
     array.forEach((element) => {
@@ -330,10 +338,12 @@ function setBombs(bombs, colIdx, rowIdx) {
     bombX = Math.floor(Math.random() * boardWidth);
 
     // TODO: add OR  board[initialCell.x][initialCell.y].value === STATE.bomb
+    // eslint-disable-next-line max-len
     while (board[bombY][bombX].value === STATE.bomb || board[colIdx][rowIdx] === board[bombY][bombX]) {
       bombY = Math.floor(Math.random() * boardHeight);
       bombX = Math.floor(Math.random() * boardWidth);
     }
+    // eslint-disable-next-line no-undef
     bombsArray.push(document.getElementById(`${bombY}-${bombX}`));
     board[bombY][bombX].value = STATE.bomb;
     // console.log(`bomb values: X - ${bombX} Y - ${bombY}`);
