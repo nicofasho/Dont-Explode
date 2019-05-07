@@ -56,6 +56,8 @@ function cacheCells() {
 const easyButton = document.getElementById('easy');
 const mediumButton = document.getElementById('medium');
 const hardButton = document.getElementById('hard');
+const form = document.getElementById('form');
+const resetButton = document.getElementById('reset');
 
 
 /* ----- event listeners -----*/
@@ -65,10 +67,18 @@ container.addEventListener('contextmenu', handleRightClick);
 easyButton.addEventListener('click', init);
 mediumButton.addEventListener('click', init);
 hardButton.addEventListener('click', init);
+resetButton.addEventListener('click', reset);
 
 
 /* ----- functions -----*/
 // eslint-disable-next-line no-use-before-define
+
+function reset() {
+  container.innerHTML = '';
+  form.style.display = '';
+  message.innerHTML = '';
+  resetButton.style.display = 'none';
+}
 
 function getInitialClick(colIdx, rowIdx) {
   initialCell = [colIdx, rowIdx];
@@ -160,10 +170,13 @@ function render() {
 }
 
 function victoryMessage() {
-  bombsArray.forEach((element) => { element.style.background = 'green'; });
+  bombsArray.forEach((element) => {
+    element.style.background = 'green';
+  });
   container.removeEventListener('click', handleLeftClick);
   container.removeEventListener('contextmenu', handleRightClick);
   message.textContent = 'You Won :D';
+  resetButton.style.display = 'block';
   // evt.target.style.background = 'red';
   console.log('You won! :D');
 }
@@ -181,6 +194,8 @@ function explode() {
   container.removeEventListener('click', handleLeftClick);
   container.removeEventListener('contextmenu', handleRightClick);
   message.textContent = 'You Exploded :/';
+  resetButton.style.display = 'block';
+
   // evt.target.style.background = 'red';
   console.log('you exploded :/');
 }
@@ -264,6 +279,10 @@ function init(evt) {
   cellArray = [];
   bombsArray = [];
   initialCell = [];
+
+  container.addEventListener('click', handleLeftClick);
+  container.addEventListener('contextmenu', handleRightClick);
+
   container.style.gridTemplateColumns = `repeat(${boardWidth}, ${50 / boardWidth}vw)`;
   container.style.gridTemplateRows = `repeat(${boardHeight}, ${70 / boardHeight}vh)`;
   // TODO: will be calculated from difficulty or input from user
@@ -277,9 +296,13 @@ function init(evt) {
 
 
   // eslint-disable-next-line no-use-before-define
+  removeDifficultyBox();
   render();
 }
 
+function removeDifficultyBox() {
+  form.style.display = 'none';
+}
 
 function initBoards(width, height) {
   container.innerHTML = '';
@@ -307,12 +330,12 @@ function setBombs(bombs, colIdx, rowIdx) {
     bombX = Math.floor(Math.random() * boardWidth);
 
     // TODO: add OR  board[initialCell.x][initialCell.y].value === STATE.bomb
-    while (board[bombX][bombY].value === STATE.bomb || board[colIdx][rowIdx] === board[bombX][bombY]) {
+    while (board[bombY][bombX].value === STATE.bomb || board[colIdx][rowIdx] === board[bombY][bombX]) {
       bombY = Math.floor(Math.random() * boardHeight);
       bombX = Math.floor(Math.random() * boardWidth);
     }
-    bombsArray.push(document.getElementById(`${bombX}-${bombY}`));
-    board[bombX][bombY].value = STATE.bomb;
+    bombsArray.push(document.getElementById(`${bombY}-${bombX}`));
+    board[bombY][bombX].value = STATE.bomb;
     // console.log(`bomb values: X - ${bombX} Y - ${bombY}`);
   }
 
@@ -326,7 +349,7 @@ function logBoards() {
 
   for (let i = 0; i < boardHeight; i += 1) {
     for (let j = 0; j < boardWidth; j += 1) {
-      bombLog += `${board[j][i].value} `;
+      bombLog += `${board[i][j].value} `;
     }
     bombLog += '\n';
   }
@@ -336,7 +359,7 @@ function logBoards() {
 
   for (let i = 0; i < boardHeight; i += 1) {
     for (let j = 0; j < boardWidth; j += 1) {
-      aroundLog += `${board[j][i].around} `;
+      aroundLog += `${board[i][j].around} `;
     }
     aroundLog += '\n';
   }

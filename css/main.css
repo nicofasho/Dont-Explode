@@ -11,6 +11,14 @@ h1{
   font-size: 4vh;
 }
 
+#message{
+  display: none;
+}
+
+#reset{
+  display: none;
+}
+
 #form{
   border: 2px solid black;
   padding: 10px;
