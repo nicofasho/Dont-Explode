@@ -8,6 +8,24 @@ const STATE = {
   'question mark': 'Q',
 };
 
+const DIFFICULTIES = {
+  easy: {
+    width: 9,
+    height: 9,
+    bombs: 10,
+  },
+  medium: {
+    width: 16,
+    height: 16,
+    bombs: 40,
+  },
+  hard: {
+    width: 30,
+    height: 16,
+    bombs: 99,
+  },
+};
+
 /* ----- app's state (variables) ----- */
 let initialCell;
 let board;
@@ -15,34 +33,42 @@ let boardWidth;
 let boardHeight;
 let exploded;
 let numBombs;
-let difficulty;
 let bombX;
 let bombY;
 let cellArray;
 let bombsArray;
+let victory;
 
 /* ----- cached element references -----*/
 // eslint-disable-next-line no-undef
 const container = document.getElementById('container');
+const message = document.getElementById('message');
 // going to cache all squares - there could be a more elegant solution, but this will work for now
 
 function cacheCells() {
   board.forEach((array, colIdx) => {
     array.forEach((element, rowIdx) => {
-      board[colIdx][rowIdx].cell = document.getElementById(`${colIdx}-${rowIdx}`);
+      element.cell = document.getElementById(`${colIdx}-${rowIdx}`);
     });
   });
 }
 
+const easyButton = document.getElementById('easy');
+const mediumButton = document.getElementById('medium');
+const hardButton = document.getElementById('hard');
+
 
 /* ----- event listeners -----*/
 // eslint-disable-next-line no-use-before-define
-container.addEventListener('mousedown', handleClick);
+container.addEventListener('click', handleLeftClick);
+container.addEventListener('contextmenu', handleRightClick);
+easyButton.addEventListener('click', init);
+mediumButton.addEventListener('click', init);
+hardButton.addEventListener('click', init);
 
 
 /* ----- functions -----*/
 // eslint-disable-next-line no-use-before-define
-init();
 
 function getInitialClick(colIdx, rowIdx) {
   initialCell = [colIdx, rowIdx];
@@ -53,25 +79,55 @@ function getInitialClick(colIdx, rowIdx) {
   render();
 }
 
-function handleClick(evt) {
+
+function handleRightClick(evt) {
+  evt.preventDefault();
+  const cellId = evt.target.id.split('-');
+  const colIdx = parseInt(cellId[0], 10);
+  const rowIdx = parseInt(cellId[1], 10);
+  if (initialCell[0]) {
+    if (board[colIdx][rowIdx].symbol === '') {
+      board[colIdx][rowIdx].symbol = STATE.flag;
+    } else if (board[colIdx][rowIdx].symbol === STATE.flag) {
+      board[colIdx][rowIdx].symbol = STATE['question mark'];
+    } else if (board[colIdx][rowIdx].symbol === STATE['question mark']) {
+      board[colIdx][rowIdx].symbol = '';
+    }
+
+    console.log(`you right clicked ${colIdx}-${rowIdx}`);
+  }
+
+
+  render();
+}
+
+function handleLeftClick(evt) {
   // add logic to differentiate between left and right clicks
   const cellId = evt.target.id.split('-');
   const colIdx = parseInt(cellId[0], 10);
   const rowIdx = parseInt(cellId[1], 10);
-  exploded = board[cellId[0]][cellId[1]].value;
+  exploded = board[colIdx][rowIdx].value;
 
-  console.log(`${evt.target.id} clicked!`);
+  // if left click
+  // proceed as normal
+  // if right click
+  // and initialcell exists
+  // then cycle through flag, question mark, and blank again
+  // if statements?
 
   if (!initialCell[0]) {
     getInitialClick(colIdx, rowIdx);
   } else if (exploded === 0) {
     // eslint-disable-next-line no-use-before-define
     reveal(colIdx, rowIdx);
-  } else {
+  } else if (exploded === 1) {
     // eslint-disable-next-line no-use-before-define
     explode();
     return;
   }
+
+  console.log(`${evt.target.id} clicked!`);
+
   render();
 }
 
@@ -88,16 +144,28 @@ function render() {
 
       if (element.revealed === false) {
         element.cell.style.background = 'blanchedalmond';
+        element.cell.textContent = element.symbol;
       } else if (element.value === STATE.safe) {
         element.cell.style.background = 'white';
         if (element.around > 0) element.cell.textContent = `${element.around}`;
-      } else if (element.value === STATE.flag) element.cell.textContent = 'F';
-      // else if (element.value === STATE.['question mark']) element.cell.textContent = '?';
-      else if (element.value === STATE.bomb) {
+      } else if (element.value === STATE.bomb) {
         explode();
       }
     });
   });
+  victory = checkVictory();
+  if (victory) {
+    victoryMessage();
+  }
+}
+
+function victoryMessage() {
+  bombsArray.forEach((element) => { element.style.background = 'green'; });
+  container.removeEventListener('click', handleLeftClick);
+  container.removeEventListener('contextmenu', handleRightClick);
+  message.textContent = 'You Won :D';
+  // evt.target.style.background = 'red';
+  console.log('You won! :D');
 }
 
 function explode() {
@@ -110,8 +178,33 @@ function explode() {
   bombsArray.forEach((element, idx) => {
     element.style.background = 'red';
   });
+  container.removeEventListener('click', handleLeftClick);
+  container.removeEventListener('contextmenu', handleRightClick);
+  message.textContent = 'You Exploded :/';
   // evt.target.style.background = 'red';
   console.log('you exploded :/');
+}
+
+function cheat() {
+  board.forEach((array) => {
+    array.forEach((element) => {
+      if (element.value === 0) {
+        element.revealed = true;
+      }
+    });
+  });
+
+  render();
+}
+
+function checkVictory() {
+  victory = board.every(array => array.every((element) => {
+    if (element.value === STATE.bomb) {
+      return !element.revealed;
+    }
+    return element.revealed;
+  }));
+  return victory;
 }
 
 function drawBoard() {
@@ -121,7 +214,7 @@ function drawBoard() {
     for (let j = 0; j < boardWidth; j += 1) {
       // eslint-disable-next-line no-undef
       div = document.createElement('div');
-      div.id = `${j}-${i}`;
+      div.id = `${i}-${j}`;
       container.appendChild(div);
     }
   }
@@ -162,17 +255,17 @@ function reveal(colIdx, rowIdx) {
   }
 }
 
-function init() {
-  boardWidth = 20; // TODO: update with dynamic sizing
-  boardHeight = 20;
+function init(evt) {
+  evt.preventDefault();
+  boardWidth = DIFFICULTIES[evt.target.id].width;
+  boardHeight = DIFFICULTIES[evt.target.id].height;
+  numBombs = DIFFICULTIES[evt.target.id].bombs;
   board = [];
-  difficulty = '';
-  numBombs = 40;
   cellArray = [];
   bombsArray = [];
   initialCell = [];
-  container.style.gridTemplateColumns = `repeat(${boardWidth}, ${60 / boardWidth}vw)`;
-  container.style.gridTemplateRows = `repeat(${boardHeight}, ${80 / boardHeight}vh)`;
+  container.style.gridTemplateColumns = `repeat(${boardWidth}, ${50 / boardWidth}vw)`;
+  container.style.gridTemplateRows = `repeat(${boardHeight}, ${70 / boardHeight}vh)`;
   // TODO: will be calculated from difficulty or input from user
 
   // TODO: get initial cell from click here
@@ -189,6 +282,7 @@ function init() {
 
 
 function initBoards(width, height) {
+  container.innerHTML = '';
   for (let i = 0; i < height; i += 1) {
     board[i] = [];
     cellArray[i] = [];
@@ -197,6 +291,7 @@ function initBoards(width, height) {
         value: 0,
         around: 0,
         revealed: false,
+        symbol: '',
       };
       cellArray[i][j] = {};
     }

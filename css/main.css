@@ -8,6 +8,16 @@ body{
 
 h1{
   font-family: 'Press Start 2P', sans-serif;
+  font-size: 4vh;
+}
+
+#form{
+  border: 2px solid black;
+  padding: 10px;
+}
+
+#form h4{
+  text-align: center;
 }
 
 body{
