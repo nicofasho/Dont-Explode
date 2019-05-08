@@ -331,6 +331,7 @@ function init(evt) {
   // container.style.gridTemplateColumns = `repeat(${boardWidth}, ${50 / boardWidth}vw)`;
   // container.style.gridTemplateRows = `repeat(${boardHeight}, ${70 / boardHeight}vh)`;
 
+  // eslint-disable-next-line no-undef
   if (document.documentElement.clientWidth > 768) {
     container.style.gridTemplateColumns = `repeat(${boardWidth}, 25px)`;
     container.style.gridTemplateRows = `repeat(${boardHeight}, 25px)`;
