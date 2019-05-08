@@ -31,7 +31,7 @@ let initialCell;
 let board;
 let boardWidth;
 let boardHeight;
-let exploded;
+// let exploded;
 let numBombs;
 let bombX;
 let bombY;
@@ -123,7 +123,7 @@ function handleLeftClick(evt) {
   const cellId = evt.target.id.split('-');
   const colIdx = parseInt(cellId[0], 10);
   const rowIdx = parseInt(cellId[1], 10);
-  exploded = board[colIdx][rowIdx].value;
+  // exploded = board[colIdx][rowIdx].value;
 
   // if left click
   // proceed as normal
@@ -134,10 +134,10 @@ function handleLeftClick(evt) {
 
   if (!initialCell[0]) {
     getInitialClick(colIdx, rowIdx);
-  } else if (exploded === 0) {
+  } else if (board[colIdx][rowIdx].value === 0) {
     // eslint-disable-next-line no-use-before-define
     reveal(colIdx, rowIdx);
-  } else if (exploded === 1) {
+  } else if (board[colIdx][rowIdx].value === 1) {
     // eslint-disable-next-line no-use-before-define
     explode();
     return;
