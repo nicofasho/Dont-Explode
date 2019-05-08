@@ -27,6 +27,34 @@ const DIFFICULTIES = {
   },
 };
 
+const SPOILERS = [
+  "Darth Vader is Luke Skywalker's father - Star Wars Episode V - The Empire Strikes Back",
+  "Dumbledore dies - Harry Potter and the Half-Blood Prince",
+  "Jim and Pam live happily ever after - The Office",
+  "Rachel and Ross end up together - Friends",
+  "Tyler Durden doesn't exist - Fight Club",
+  "Jack couldn't fit on the raft - Titanic",
+  "Ned Stark is beheaded by King Joffrey - Game of Thrones",
+  "Bruce Willis was dead the whole time - The Sixth Sense",
+  "Neo is the one - The Matrix",
+  "Rosebud was Kane's sled - Citizen Kane",
+  "Spacey is Keyser Soze - The Usual Suspects",
+  "Iron Man Dabs on Taynos - Avengers: Endgame",
+  "Red Wedding.... Nuff said - Game of Thrones",
+  "Arthur Morgan dies of tuberculosis - Red Dead Redemption 2",
+  "Samus is a woman - Metroid",
+  "Auron was dead the whole time - Final Fantasy 10",
+  "Tidus is a ghost? Memory? Whatever - Final Fantasy 10",
+  "Aeris dies... no one used Life - Final Fantasy 7",
+  "Would you kindly? - BioShock",
+  "Kefka destroys the world - Final Fantasy 6",
+  "Cloud modeled his personality after his dead friend Zack - Final Fantasy 7",
+  "Sephiroth was ACTUALLY in the North Crater, those were clones - Final Fantasy 7",
+  "Jenova is a space alien - Final Fantasy 7",
+];
+
+
+
 /* ----- app's state (variables) ----- */
 let initialCell;
 let board;
@@ -83,8 +111,11 @@ resetButton.addEventListener('click', reset);
 
 function reset() {
   container.innerHTML = '';
-  form.style.display = '';
-  message.style.color = 'white';
+  container.style.display = 'none';
+  message.style.display = 'none';
+  form.style.display = 'block';
+  form.style.marginTop = '70';
+  // message.style.color = 'white';
   resetButton.style.display = 'none';
   initialCell = undefined;
 }
@@ -162,7 +193,7 @@ function render() {
       // if value === 1, then exploded, game ends, let's do game end logic here
 
       if (element.revealed === false) {
-        element.cell.style.background = 'blanchedalmond';
+        element.cell.style.background = '#d0d4db';
         element.cell.textContent = element.symbol;
       } else if (element.value === STATE.safe) {
         element.cell.style.background = 'white';
@@ -181,11 +212,12 @@ function render() {
 function victoryMessage() {
   bombsArray.forEach((element) => {
     element.style.background = 'green';
+    element.textContent = '🎉';
   });
   container.removeEventListener('click', handleLeftClick);
   container.removeEventListener('contextmenu', handleRightClick);
-  message.textContent = 'You Won :D';
-  message.style.color = 'black';
+  message.textContent = 'You Avoided the Spoilers!';
+  message.style.display = 'block';
   resetButton.style.display = 'block';
   // evt.target.style.background = 'red';
   console.log('You won! :D');
@@ -200,11 +232,13 @@ function explode() {
   // bombs.forEach((element) => element.revealed = true);
   bombsArray.forEach((element, idx) => {
     element.style.background = 'red';
+    element.textContent = '💣';
   });
   container.removeEventListener('click', handleLeftClick);
   container.removeEventListener('contextmenu', handleRightClick);
-  message.textContent = 'You Exploded :/';
-  message.style.color = 'black';
+  message.textContent = SPOILERS[Math.floor(Math.random() * SPOILERS.length)];
+
+  message.style.display = 'block';
   resetButton.style.display = 'block';
 
   // evt.target.style.background = 'red';
@@ -296,8 +330,16 @@ function init(evt) {
 
   // container.style.gridTemplateColumns = `repeat(${boardWidth}, ${50 / boardWidth}vw)`;
   // container.style.gridTemplateRows = `repeat(${boardHeight}, ${70 / boardHeight}vh)`;
-container.style.gridTemplateColumns = `repeat(${boardWidth}, 25px)`;
-container.style.gridTemplateRows = `repeat(${boardHeight}, 25px)`;
+
+  if (document.documentElement.clientWidth > 768) {
+    container.style.gridTemplateColumns = `repeat(${boardWidth}, 25px)`;
+    container.style.gridTemplateRows = `repeat(${boardHeight}, 25px)`;
+  } else {
+    container.style.gridTemplateColumns = `repeat(${boardWidth}, 15px)`
+    container.style.gridTemplateRows = `repeat(${boardHeight}, 15px)`
+  }
+
+  container.style.display = 'grid';
 
 
   // TODO: will be calculated from difficulty or input from user

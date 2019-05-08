@@ -4,19 +4,26 @@
 
 body {
   font-family: 'Montserrat', sans-serif;
+  /* font-family: 'Gugi', cursive; */
+  background: #b7c7e2;
 }
 
 h1 {
-  /* font-family: 'Press Start 2P', sans-serif; */
-  font-size: 4vh;
+  font-size: 5vh;
+  text-align: center;
 }
 
-#message {
-  color: white;
+#message{
+  max-width: 75vw;
 }
 
 #reset {
   display: none;
+}
+
+#reset:hover{
+  background-color: black;
+  color: white;
 }
 
 #form {
@@ -29,7 +36,25 @@ h1 {
 }
 
 section{
-  display: grid;
+  display: none;
+  grid-gap: 3px;
+  margin-bottom: 5vh;
+  padding: 10px;
+  background-color: #8894aa;
+  outline: solid black 3px;
+}
+
+section div {
+  box-sizing: content-box;
+  width: 100%;
+  height: 100%;
+  border: black 1px solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: whitesmoke;
+  font-weight: bold;
+  transition: .3s;
 }
 
 body {
@@ -45,15 +70,41 @@ main {
   align-items: center;
 }
 
+button{
+  padding: 10px 20px;
+  border-radius: 3px;
+  background-color: white;
+  font-family: 'Montserrat', sans-serif;
+  transition: .3s;
+  font-weight: bold;
+  border-color: black;
+}
 
-section div {
-  box-sizing: content-box;
-  width: 100%;
-  height: 100%;
-  border: black 1px solid;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+#easy{
+  border-color: green;
+}
+
+#easy:hover{
+  color: white;
+  background-color: green;
+}
+
+#medium{
+  border-color: yellow;
+}
+
+#medium:hover{
+  color: white;
+  background-color: yellow;
+}
+
+#hard{
+  border-color: red;
+}
+
+#hard:hover{
+  color: white;
+  background-color: red;
 }
 
 @media screen and (max-width: 768px) {
