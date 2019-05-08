@@ -112,7 +112,7 @@ resetButton.addEventListener('click', reset);
 function reset() {
   container.innerHTML = '';
   container.style.display = 'none';
-  message.style.display = 'none';
+  message.innerHTML = '<br>';
   form.style.display = 'block';
   form.style.marginTop = '70';
   // message.style.color = 'white';
@@ -122,6 +122,10 @@ function reset() {
 
 function getInitialClick(colIdx, rowIdx) {
   initialCell = [colIdx, rowIdx];
+  if (isNaN(initialCell[0]) || isNaN(initialCell[1])){
+    initialCell = undefined;
+    return;
+  }
 
   setBombs(numBombs, colIdx, rowIdx);
   reveal(colIdx, rowIdx);
