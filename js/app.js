@@ -86,6 +86,7 @@ function reset() {
   form.style.display = '';
   message.innerHTML = '';
   resetButton.style.display = 'none';
+  initialCell = undefined;
 }
 
 function getInitialClick(colIdx, rowIdx) {
@@ -94,7 +95,7 @@ function getInitialClick(colIdx, rowIdx) {
   setBombs(numBombs, colIdx, rowIdx);
   reveal(colIdx, rowIdx);
   logBoards();
-  render();
+  // render();
 }
 
 
@@ -103,7 +104,7 @@ function handleRightClick(evt) {
   const cellId = evt.target.id.split('-');
   const colIdx = parseInt(cellId[0], 10);
   const rowIdx = parseInt(cellId[1], 10);
-  if (initialCell[0]) {
+  if (typeof initialCell !== 'undefined') {
     if (board[colIdx][rowIdx].symbol === '') {
       board[colIdx][rowIdx].symbol = STATE.flag;
     } else if (board[colIdx][rowIdx].symbol === STATE.flag) {
@@ -133,7 +134,7 @@ function handleLeftClick(evt) {
   // then cycle through flag, question mark, and blank again
   // if statements?
 
-  if (!initialCell[0]) {
+  if (typeof initialCell === 'undefined') {
     getInitialClick(colIdx, rowIdx);
   } else if (board[colIdx][rowIdx].value === 0) {
     // eslint-disable-next-line no-use-before-define
@@ -288,7 +289,6 @@ function init(evt) {
   board = [];
   cellArray = [];
   bombsArray = [];
-  initialCell = [];
 
   container.addEventListener('click', handleLeftClick);
   container.addEventListener('contextmenu', handleRightClick);
