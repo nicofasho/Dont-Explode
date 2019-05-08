@@ -122,7 +122,7 @@ function reset() {
 
 function getInitialClick(colIdx, rowIdx) {
   initialCell = [colIdx, rowIdx];
-  if (isNaN(initialCell[0]) || isNaN(initialCell[1])){
+  if (isNaN(initialCell[0]) || isNaN(initialCell[1])) {
     initialCell = undefined;
     return;
   }
