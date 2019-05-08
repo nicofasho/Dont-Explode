@@ -84,7 +84,7 @@ resetButton.addEventListener('click', reset);
 function reset() {
   container.innerHTML = '';
   form.style.display = '';
-  message.innerHTML = '';
+  message.style.color = 'white';
   resetButton.style.display = 'none';
   initialCell = undefined;
 }
@@ -185,6 +185,7 @@ function victoryMessage() {
   container.removeEventListener('click', handleLeftClick);
   container.removeEventListener('contextmenu', handleRightClick);
   message.textContent = 'You Won :D';
+  message.style.color = 'black';
   resetButton.style.display = 'block';
   // evt.target.style.background = 'red';
   console.log('You won! :D');
@@ -203,7 +204,7 @@ function explode() {
   container.removeEventListener('click', handleLeftClick);
   container.removeEventListener('contextmenu', handleRightClick);
   message.textContent = 'You Exploded :/';
-  message.style.display = 'block';
+  message.style.color = 'black';
   resetButton.style.display = 'block';
 
   // evt.target.style.background = 'red';
@@ -293,8 +294,12 @@ function init(evt) {
   container.addEventListener('click', handleLeftClick);
   container.addEventListener('contextmenu', handleRightClick);
 
-  container.style.gridTemplateColumns = `repeat(${boardWidth}, ${50 / boardWidth}vw)`;
-  container.style.gridTemplateRows = `repeat(${boardHeight}, ${70 / boardHeight}vh)`;
+  // container.style.gridTemplateColumns = `repeat(${boardWidth}, ${50 / boardWidth}vw)`;
+  // container.style.gridTemplateRows = `repeat(${boardHeight}, ${70 / boardHeight}vh)`;
+container.style.gridTemplateColumns = `repeat(${boardWidth}, 25px)`;
+container.style.gridTemplateRows = `repeat(${boardHeight}, 25px)`;
+
+
   // TODO: will be calculated from difficulty or input from user
 
   // TODO: get initial cell from click here
