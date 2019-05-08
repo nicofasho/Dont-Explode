@@ -201,6 +201,7 @@ function explode() {
   container.removeEventListener('click', handleLeftClick);
   container.removeEventListener('contextmenu', handleRightClick);
   message.textContent = 'You Exploded :/';
+  message.style.display = 'block';
   resetButton.style.display = 'block';
 
   // evt.target.style.background = 'red';
