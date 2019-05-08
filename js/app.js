@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable linebreak-style */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-param-reassign */
@@ -52,7 +53,6 @@ const SPOILERS = [
   "Sephiroth was ACTUALLY in the North Crater, those were clones - Final Fantasy 7",
   "Jenova is a space alien - Final Fantasy 7",
 ];
-
 
 
 /* ----- app's state (variables) ----- */
@@ -182,8 +182,8 @@ function handleLeftClick(evt) {
 }
 
 function render() {
-  board.forEach((array, colIdx) => {
-    array.forEach((element, rowIdx) => {
+  board.forEach((array) => {
+    array.forEach((element) => {
       // if not revealed, then blank
       // if revealed, then white, red, flag, or question mark
       // if value === 0 then white
@@ -230,7 +230,7 @@ function explode() {
 
 
   // bombs.forEach((element) => element.revealed = true);
-  bombsArray.forEach((element, idx) => {
+  bombsArray.forEach((element) => {
     element.style.background = 'red';
     element.textContent = '💣';
   });
@@ -335,8 +335,8 @@ function init(evt) {
     container.style.gridTemplateColumns = `repeat(${boardWidth}, 25px)`;
     container.style.gridTemplateRows = `repeat(${boardHeight}, 25px)`;
   } else {
-    container.style.gridTemplateColumns = `repeat(${boardWidth}, 15px)`
-    container.style.gridTemplateRows = `repeat(${boardHeight}, 15px)`
+    container.style.gridTemplateColumns = `repeat(${boardWidth}, 20px)`;
+    container.style.gridTemplateRows = `repeat(${boardHeight}, 20px)`;
   }
 
   container.style.display = 'grid';
