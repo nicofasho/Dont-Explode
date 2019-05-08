@@ -28,6 +28,7 @@ h1 {
 
 #form {
   border: 2px solid black;
+  border-radius: 5px;
   padding: 10px;
 }
 
@@ -42,6 +43,7 @@ section{
   padding: 10px;
   background-color: #8894aa;
   outline: solid black 3px;
+  transition: .3s;
 }
 
 section div {
@@ -94,7 +96,7 @@ button{
 }
 
 #medium:hover{
-  color: white;
+  color: black;
   background-color: yellow;
 }
 
