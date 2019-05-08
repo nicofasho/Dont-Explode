@@ -5,8 +5,8 @@
 const STATE = {
   bomb: 1,
   safe: 0,
-  flag: 'F',
-  'question mark': 'Q',
+  flag: '🚩',
+  'question mark': '❓',
 };
 
 const DIFFICULTIES = {
