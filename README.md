@@ -8,12 +8,12 @@ The Goal of Avoid the Spoilers is to uncover all the squares without bombs. If y
 
 ## Screenshots
 
-[Home Screen](difficultyscreen.png)
-[Easy Board](easyboard.png)
-[Medium Board](mediumboard.png)
-[Hard Board](hardboard.png)
-[Loss Screen](loss.png)
-[Victory Screen](victory.png)
+- [Home Screen](difficultyscreen.png)
+- [Easy Board](easyboard.png)
+- [Medium Board](mediumboard.png)
+- [Hard Board](hardboard.png)
+- [Loss Screen](loss.png)
+- [Victory Screen](victory.png)
 
 ## Technologies Used
 
