@@ -126,7 +126,6 @@ function getInitialClick(colIdx, rowIdx) {
     initialCell = undefined;
     return;
   }
-
   setBombs(numBombs, colIdx, rowIdx);
   reveal(colIdx, rowIdx);
   logBoards();
@@ -291,34 +290,75 @@ function reveal(colIdx, rowIdx) {
   }
   board[colIdx][rowIdx].revealed = true;
   if (board[colIdx][rowIdx].around === 0) {
-    if (colIdx > 0) {
-      if (rowIdx > 0) {
-        reveal((colIdx - 1), (rowIdx - 1));
-      }
-      if (rowIdx < boardWidth - 1) {
-        reveal((colIdx - 1), (rowIdx + 1));
-      }
-      reveal((colIdx - 1), (rowIdx));
-    }
-    if (colIdx < boardHeight - 1) {
-      if (rowIdx > 0) {
-        reveal((colIdx + 1), (rowIdx - 1));
-      }
-      if (rowIdx < boardWidth - 1) {
-        reveal((colIdx + 1), (rowIdx + 1));
-      }
-      reveal((colIdx + 1), (rowIdx));
-    }
-    if (rowIdx > 0) {
-      reveal((colIdx), (rowIdx - 1));
-    }
-    if (rowIdx < boardWidth - 1) {
-      reveal((colIdx), (rowIdx + 1));
-    }
+    revealTopLeft(colIdx, rowIdx);
+    revealTop(colIdx, rowIdx);
+    revealTopRight(colIdx, rowIdx);
+    revealRight(colIdx, rowIdx);
+    revealBottomRight(colIdx, rowIdx);
+    revealBottom(colIdx, rowIdx);
+    revealBottomLeft(colIdx, rowIdx);
+    revealLeft(colIdx, rowIdx);
   } else {
     board[colIdx][rowIdx].revealed = true;
   }
 }
+
+function revealTopLeft(colIdx, rowIdx) {
+  if (colIdx > 0) {
+    if (rowIdx > 0) {
+      reveal(colIdx - 1, rowIdx - 1);
+    }
+  }
+}
+
+function revealTop(colIdx, rowIdx) {
+  if (colIdx > 0) {
+    reveal(colIdx - 1, rowIdx);
+  }
+}
+
+function revealTopRight(colIdx, rowIdx) {
+  if (colIdx > 0) {
+    if (rowIdx < boardWidth - 1) {
+      reveal(colIdx - 1, rowIdx + 1);
+    }
+  }
+}
+
+function revealRight(colIdx, rowIdx) {
+  if (rowIdx < boardWidth - 1) {
+    reveal(colIdx, rowIdx + 1);
+  }
+}
+
+function revealBottomRight(colIdx, rowIdx) {
+  if (colIdx < boardHeight - 1) {
+    if (rowIdx < boardWidth - 1) {
+      reveal(colIdx + 1, rowIdx + 1);
+    }
+  }
+}
+
+function revealBottom(colIdx, rowIdx) {
+  if (colIdx < boardHeight - 1) {
+    reveal(colIdx + 1, rowIdx);
+  }
+}
+
+function revealBottomLeft(colIdx, rowIdx) {
+  if (colIdx < boardHeight - 1) {
+    if (rowIdx > 0) {
+      reveal(colIdx + 1, rowIdx - 1);
+    }
+  }
+}
+
+function revealLeft(colIdx, rowIdx) {
+  if (rowIdx > 0) {
+    reveal(colIdx, rowIdx - 1);
+  }
+}
+
 
 function init(evt) {
   evt.preventDefault();
@@ -433,47 +473,85 @@ function logBoards() {
 function setArounds() {
   board.forEach((array, colIdx) => {
     array.forEach((element, rowIdx) => {
-      if (colIdx > 0) {
-        if (rowIdx > 0) {
-          if (board[colIdx - 1][rowIdx - 1].value === STATE.bomb) {
-            element.around += 1;
-          }
-        }
-        if (rowIdx < boardWidth - 1) {
-          if (board[colIdx - 1][rowIdx + 1].value === STATE.bomb) {
-            element.around += 1;
-          }
-        }
-        if (board[colIdx - 1][rowIdx].value === STATE.bomb) {
-          element.around += 1;
-        }
-      }
-      if (colIdx < boardHeight - 1) {
-        if (rowIdx > 0) {
-          if (board[colIdx + 1][rowIdx - 1].value === STATE.bomb) {
-            element.around += 1;
-          }
-        }
-        if (rowIdx < boardWidth - 1) {
-          if (board[colIdx + 1][rowIdx + 1].value === STATE.bomb) {
-            // eslint-disable-next-line no-param-reassign
-            element.around += 1;
-          }
-        }
-        if (board[colIdx + 1][rowIdx].value === STATE.bomb) {
-          element.around += 1;
-        }
-      }
-      if (rowIdx > 0) {
-        if (board[colIdx][rowIdx - 1].value === STATE.bomb) {
-          element.around += 1;
-        }
-      }
-      if (rowIdx < boardWidth - 1) {
-        if (board[colIdx][rowIdx + 1].value === STATE.bomb) {
-          element.around += 1;
-        }
-      }
+      aroundTopLeft(colIdx, rowIdx, element);
+      aroundTop(colIdx, rowIdx, element);
+      aroundTopRight(colIdx, rowIdx, element);
+      aroundRight(colIdx, rowIdx, element);
+      aroundBottomRight(colIdx, rowIdx, element);
+      aroundBottom(colIdx, rowIdx, element);
+      aroundBottomLeft(colIdx, rowIdx, element);
+      aroundLeft(colIdx, rowIdx, element);
     });
   });
+}
+
+function aroundTopLeft(colIdx, rowIdx, element) {
+  if (colIdx > 0) {
+    if (rowIdx > 0) {
+      if (board[colIdx - 1][rowIdx - 1].value === STATE.bomb) {
+        element.around += 1;
+      }
+    }
+  }
+}
+
+function aroundTop(colIdx, rowIdx, element) {
+  if (colIdx > 0) {
+    if (board[colIdx - 1][rowIdx].value === STATE.bomb) {
+      element.around += 1;
+    }
+  }
+}
+
+function aroundTopRight(colIdx, rowIdx, element) {
+  if (colIdx > 0) {
+    if (rowIdx < boardWidth - 1) {
+      if (board[colIdx - 1][rowIdx + 1].value === STATE.bomb) {
+        element.around += 1;
+      }
+    }
+  }
+}
+
+function aroundRight(colIdx, rowIdx, element) {
+  if (rowIdx < boardWidth - 1) {
+    if (board[colIdx][rowIdx + 1].value === STATE.bomb) {
+      element.around += 1;
+    }
+  }
+}
+
+function aroundBottomRight(colIdx, rowIdx, element) {
+  if (colIdx < boardHeight - 1) {
+    if (rowIdx < boardWidth - 1) {
+      if (board[colIdx + 1][rowIdx + 1].value === STATE.bomb) {
+        element.around += 1;
+      }
+    }
+  }
+}
+
+function aroundBottom(colIdx, rowIdx, element) {
+  if (colIdx < boardHeight - 1) {
+    if (board[colIdx + 1][rowIdx].value === STATE.bomb) {
+      element.around += 1;
+    }
+  }
+}
+function aroundBottomLeft(colIdx, rowIdx, element) {
+  if (colIdx < boardHeight - 1) {
+    if (rowIdx > 0) {
+      if (board[colIdx + 1][rowIdx - 1].value === STATE.bomb) {
+        element.around += 1;
+      }
+    }
+  }
+}
+
+function aroundLeft(colIdx, rowIdx, element) {
+  if (rowIdx > 0) {
+    if (board[colIdx][rowIdx - 1].value === STATE.bomb) {
+      element.around += 1;
+    }
+  }
 }
