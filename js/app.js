@@ -1,4 +1,8 @@
 /* ----- constants -----*/
+
+// TODO add bomb counter, when player places flag
+
+
 const STATE = {
   bomb: 1,
   safe: 0,
@@ -57,6 +61,7 @@ let board;
 let boardWidth;
 let boardHeight;
 let numBombs;
+var bombCounter;
 let bombX;
 let bombY;
 let cellArray;
@@ -121,8 +126,10 @@ function handleRightClick(evt) {
   const rowIdx = parseInt(cellId[1], 10);
   if (typeof initialCell !== 'undefined') {
     if (board[colIdx][rowIdx].symbol === '') {
+      bombCounter -= 1;
       board[colIdx][rowIdx].symbol = STATE.flag;
     } else if (board[colIdx][rowIdx].symbol === STATE.flag) {
+      bombCounter += 1;
       board[colIdx][rowIdx].symbol = STATE['question mark'];
     } else if (board[colIdx][rowIdx].symbol === STATE['question mark']) {
       board[colIdx][rowIdx].symbol = '';
@@ -152,12 +159,15 @@ function handleLeftClick(evt) {
 }
 
 function render() {
+  message.textContent = `Bombs Left: ${bombCounter}`;
   board.forEach((array) => {
     array.forEach((element) => {
-
+      
       if (element.revealed === false) {
         element.cell.style.background = '#d0d4db';
         element.cell.textContent = element.symbol;
+        if (element.symbol === STATE.flag) {
+        }
       } else if (element.value === STATE.safe) {
         element.cell.style.background = 'white';
         if (element.around > 0) element.cell.textContent = `${element.around}`;
@@ -315,6 +325,7 @@ function init(evt) {
   board = [];
   cellArray = [];
   bombsArray = [];
+  bombCounter = numBombs;
 
   container.addEventListener('click', handleLeftClick);
   container.addEventListener('contextmenu', handleRightClick);
