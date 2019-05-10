@@ -1,8 +1,5 @@
 /* ----- constants -----*/
 
-// TODO add bomb counter, when player places flag
-
-
 const STATE = {
   bomb: 1,
   safe: 0,
